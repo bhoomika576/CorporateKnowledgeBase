@@ -1,0 +1,31 @@
+def sum_of_nums()
+    print("the sum of 2 numbers")
+    
+
+def greet_eng()
+    print("this is a greeting in english")
+
+
+def greet_fr()
+    print("this is a greeting in french")
+
+
+def greet_es
+    print("this is a greeting in spanish")
+
+
+def average()
+    print("this is the average of 5 numbers")
+
+
+def convert_dollar_rupees()
+    print("this is the coversion of USD to MUR")
+
+
+def convert_usd_mur
+
+sum()
+greet_eng
+
+
+

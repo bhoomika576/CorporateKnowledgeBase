@@ -9,4 +9,3 @@ def calculate_salary():
 calculate_salary()
 
 print(salary)
-#print(totalSalary)
