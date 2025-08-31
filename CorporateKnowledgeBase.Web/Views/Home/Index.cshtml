@@ -1,0 +1,103 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CorporateKnowledgeBase.Web.Models
+@model HomeViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <partial name="_LoggedInHome" model="Model" />
+}
+else
+{
+    <partial name="_GuestHome" />
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // ======================= PART 1: GLOBAL SEARCH FORM =======================
+            $('#search-form').on('submit', function(e) {
+                e.preventDefault();
+                var query = $(this).find('input[name="query"]').val();
+                if(query) {
+                    // Perform search using the performSearch function
+                    performSearch(query, 1);
+                }
+            });
+
+            $(document).on('click', '#page-content .pagination a', function (e) {
+                e.preventDefault();
+                var href = $(this).attr('href');
+                var urlParams = new URLSearchParams(href.split('?')[1]);
+                var query = urlParams.get('query');
+                var pageNumber = urlParams.get('pageNumber');
+
+                if (query && pageNumber) {
+                    performSearch(query, pageNumber);
+                }
+            });
+
+            function performSearch(query, pageNumber) {
+                var contentArea = $('#page-content');
+                contentArea.html('<div class="d-flex justify-content-center mt-5"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+
+                $.ajax({
+                    url: '@Url.Action("Index", "Search")',
+                    data: { query: query, pageNumber: pageNumber },
+                    type: 'GET',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    success: function (result) {
+                        contentArea.html(result);
+                        var newUrl = '@Url.Action("Index", "Search")' + '?query=' + encodeURIComponent(query) + '&pageNumber=' + pageNumber;
+                        history.pushState({ path: newUrl }, '', newUrl);
+                    },
+                    error: function() {
+                        contentArea.html('<div class="alert alert-danger">An error occurred during the search. Please try again.</div>');
+                    }
+                });
+            }
+
+            // ======================= PART 2: DASHBOARD CARD FILTERS =======================
+            function loadContent(contentType) {
+                var listType = $(`input[name="${contentType}ListType"]:checked`).val();
+                var timeFilterElement = $(`#${contentType}TimeFilter`);
+                var timeFilterValue = timeFilterElement.val();
+                var container = $(`#${contentType}-list-container`);
+
+                if (listType === 'popular') {
+                    timeFilterElement.removeClass('d-none');
+                } else {
+                    timeFilterElement.addClass('d-none');
+                    timeFilterValue = 'all';
+                }
+
+                container.html('<li class="list-group-item text-center"><div class="spinner-border spinner-border-sm" role="status"></div></li>');
+
+                $.ajax({
+                    url: '@Url.Action("GetContentList", "Home")',
+                    data: { contentType: contentType, listType: listType, timeFilter: timeFilterValue },
+                    success: function(response) { container.html(response); },
+                    error: function() { container.html('<li class="list-group-item text-danger">An error occurred while loading content.</li>'); }
+                });
+            }
+
+            $('.content-filter').on('change', function() {
+                var contentType = $(this).data('content-type');
+                loadContent(contentType);
+            });
+
+            // Ensure time filters are hidden on initial load if "Recent" is selected
+            if ($('input[name="blogListType"]:checked').val() !== 'popular') {
+                $('#blogTimeFilter').addClass('d-none');
+            }
+            if ($('input[name="documentListType"]:checked').val() !== 'popular') {
+                $('#documentTimeFilter').addClass('d-none');
+            }
+        });
+    </script>
+}

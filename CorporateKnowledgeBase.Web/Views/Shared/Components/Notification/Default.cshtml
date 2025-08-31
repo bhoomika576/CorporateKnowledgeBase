@@ -1,0 +1,49 @@
+﻿@model IEnumerable<CorporateKnowledgeBase.Web.Models.Notification>
+@using CorporateKnowledgeBase.Web.Helpers
+
+<li class="nav-item dropdown">
+    <a class="nav-link text-dark position-relative" href="#" id="navbarDropdownNotification" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+        <span class="d-none d-sm-inline">Notifications</span>
+        <i class="bi bi-bell-fill fs-5 d-inline d-sm-none"></i>
+
+        @if (ViewBag.UnreadCount > 0)
+        {
+            <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" style="font-size: 0.6em; margin-top: 8px; margin-left: -10px;">
+                @ViewBag.UnreadCount
+            </span>
+        }
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="navbarDropdownNotification" style="width: 350px;">
+        <li class="px-3 py-2">
+            <h6 class="mb-0">Notifications</h6>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+
+        @if (Model.Any())
+        {
+            @foreach (var notification in Model)
+            {
+                var backgroundClass = notification.IsRead ? "" : "bg-light";
+                <li>
+                    <a class="dropdown-item p-3 @backgroundClass" asp-area="" asp-controller="Notification" asp-action="Go" asp-route-id="@notification.Id">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-grow-1">
+                                <p class="mb-0" style="white-space: normal;">@notification.Message</p>
+                                <small class="text-muted">@TimeHelper.TimeAgo(notification.CreatedDate)</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+        }
+        else
+        {
+            <li class="px-3 py-2 text-center text-muted">
+                <small>You have no new notifications.</small>
+            </li>
+        }
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-center" asp-area="" asp-controller="Notification" asp-action="Index">View all notifications</a></li>
+    </ul>
+</li>

@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CorporateKnowledgeBase.Web.Enums
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Knowledge Base</a>
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Blog" asp-action="Index">Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Document" asp-action="Index">Documents</a>
+                    </li>
+
+                    @if (User.IsInRole(RoleEnums.Admin.ToString()))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Announcement" asp-action="Index">Announcements</a>
+                        </li>
+                    }
+                }
+
+                @if (User?.Identity?.IsAuthenticated == true && (User.IsInRole(RoleEnums.Admin.ToString()) || User.IsInRole(RoleEnums.Developer.ToString())))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Write
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Blog" asp-action="Create">New Blog Post</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Document" asp-action="Create">New Technical Document</a></li>
+                            @if (User.IsInRole(RoleEnums.Admin.ToString()))
+                            {
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Announcement" asp-action="Create">New Announcement</a></li>
+                            }
+                        </ul>
+                    </li>
+                }
+
+                @if (User?.Identity?.IsAuthenticated == true && User.IsInRole(RoleEnums.Admin.ToString()))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Administration
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="UserManagement" asp-action="Index">User Management</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="TagManagement" asp-action="Index">Tag Management</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="CategoryManagement" asp-action="Index">Category Management</a></li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+            <partial name="Partial/_LoginPartial" />
+        </div>
+    </div>
+</nav>

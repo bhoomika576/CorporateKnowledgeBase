@@ -1,0 +1,19 @@
+﻿@model CorporateKnowledgeBase.Web.Models.Comment
+
+<div class="d-flex mb-3">
+    <div class="flex-shrink-0">
+        <img class="rounded-circle" src="@(Model.Author.ProfilePictureUrl ?? "/images/avatars/default-avatar.png")" alt="@Model.Author.FullName" width="50" height="50">
+    </div>
+
+    <div class="ms-3 flex-grow-1">
+        <div class="card">
+            <div class="card-body p-2">
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold">@Model.Author.FullName</span>
+                    <small class="text-muted">@Model.CreatedDate.ToString("g")</small>
+                </div>
+                <p class="card-text mt-2">@Model.Content</p>
+            </div>
+        </div>
+    </div>
+</div>

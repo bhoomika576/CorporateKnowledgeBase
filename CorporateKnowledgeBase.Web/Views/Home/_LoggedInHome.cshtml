@@ -1,0 +1,149 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CorporateKnowledgeBase.Web.Enums
+@model HomeViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@* Welcome and Search Area *@
+<div class="text-center p-4 bg-light rounded-3 mb-4">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var displayName = user?.FullName ?? User.Identity?.Name;
+        <h1 class="display-5">Welcome, @displayName!</h1>
+    }
+    else
+    {
+        <h1 class="display-5">Corporate Knowledge Base</h1>
+    }
+    <p class="lead text-muted">The fastest way to the information you're looking for.</p>
+    <div class="row justify-content-center my-4">
+        <div class="col-md-8">
+            <form id="search-form" asp-controller="Search" asp-action="Index" method="get">
+                <div class="input-group">
+                    <input type="text" name="query" class="form-control form-control-lg" placeholder="Search in blogs, documents, or tags..." aria-label="Search box">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="page-content">
+    @* Recent Announcements *@
+    @if (Model.RecentAnnouncements.Any())
+    {
+        <div class="card border-warning shadow-sm mb-4">
+            <h5 class="card-header bg-warning text-dark"><i class="bi bi-megaphone-fill me-2"></i>Recent Announcements</h5>
+            <div class="card-body">
+                @foreach (var announcement in Model.RecentAnnouncements)
+                {
+                    var plainContent = System.Text.RegularExpressions.Regex.Replace(announcement.Content ?? "", "<.*?>", string.Empty);
+                    var snippet = plainContent.Substring(0, Math.Min(plainContent.Length, 150));
+
+                    <div class="alert alert-secondary">
+                        <h6 class="alert-heading">@announcement.Title</h6>
+                        <p class="mb-0">
+                            @snippet @(plainContent.Length > 150 ? "..." : "")
+                            <a asp-controller="Announcement" asp-action="Details" asp-route-id="@announcement.Id">Read More</a>
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-light p-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check content-filter" name="blogListType" id="blogRecent" value="recent" data-content-type="blog" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="blogRecent"><i class="bi bi-clock-history"></i> Recent Posts</label>
+
+                            <input type="radio" class="btn-check content-filter" name="blogListType" id="blogPopular" value="popular" data-content-type="blog" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="blogPopular"><i class="bi bi-fire"></i> Popular</label>
+                        </div>
+                        <select class="form-select form-select-sm w-auto content-filter d-none" id="blogTimeFilter" data-content-type="blog">
+                            <option value="all" selected>All Time</option>
+                            <option value="monthly">This Month</option>
+                            <option value="weekly">This Week</option>
+                            <option value="daily">Today</option>
+                        </select>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush" id="blog-list-container">
+                    <partial name="_ContentListPartial" model="Model.RecentBlogPosts" />
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-light p-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check content-filter" name="documentListType" id="docRecent" value="recent" data-content-type="document" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="docRecent"><i class="bi bi-clock-history"></i> Recent Docs</label>
+
+                            <input type="radio" class="btn-check content-filter" name="documentListType" id="docPopular" value="popular" data-content-type="document" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="docPopular"><i class="bi bi-fire"></i> Popular</label>
+                        </div>
+                        <select class="form-select form-select-sm w-auto content-filter d-none" id="documentTimeFilter" data-content-type="document">
+                            <option value="all" selected>All Time</option>
+                            <option value="monthly">This Month</option>
+                            <option value="weekly">This Week</option>
+                            <option value="daily">Today</option>
+                        </select>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush" id="document-list-container">
+                    <partial name="_ContentListPartial" model="Model.RecentDocuments" />
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.RecentlyViewedItems.Any())
+    {
+        <div class="card shadow-sm mb-4">
+            <h5 class="card-header"><i class="bi bi-eye-fill me-2"></i>Recently Viewed</h5>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.RecentlyViewedItems)
+                {
+                    if (item is BlogPost post)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a asp-area="" asp-controller="Blog" asp-action="Details" asp-route-id="@post.Id">@post.Title</a>
+                            <span class="badge bg-primary rounded-pill">Blog</span>
+                        </li>
+                    }
+                    else if (item is TechnicalDocument doc)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a asp-area="" asp-controller="Document" asp-action="Details" asp-route-id="@doc.Id">@doc.Title</a>
+                            <span class="badge bg-success rounded-pill">Document</span>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+
+    @if (SignInManager.IsSignedIn(User) && (User.IsInRole(RoleEnums.Admin.ToString()) || User.IsInRole(RoleEnums.Developer.ToString())))
+    {
+        <div class="card text-center shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Share Your Knowledge</h5>
+                <p class="card-text">Contribute to the team by creating new content.</p>
+                <a asp-controller="Blog" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>New Blog Post</a>
+                <a asp-controller="Document" asp-action="Create" class="btn btn-secondary"><i class="bi bi-plus-circle me-1"></i>New Technical Document</a>
+            </div>
+        </div>
+    }
+</div>

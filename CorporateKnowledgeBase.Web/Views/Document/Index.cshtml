@@ -1,0 +1,93 @@
+﻿@model IEnumerable<CorporateKnowledgeBase.Web.Models.TechnicalDocument>
+
+@{
+    ViewData["Title"] = "Technical Documents";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.CurrentTag))
+{
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <span>
+            Filtered by Tag: <span class="badge bg-dark">@ViewBag.CurrentTag</span>
+        </span>
+        <a asp-area="" asp-controller="Document" asp-action="Index" class="btn btn-sm btn-outline-danger">Clear Filter</a>
+    </div>
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form id="search-form" asp-controller="Document" asp-action="Index" method="get">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6">
+                    <input type="text" id="search-input" name="searchString" class="form-control" placeholder="Search in title, content, or tags..." value="@ViewBag.CurrentSearchString" />
+                </div>
+                <div class="col-md-4">
+                    <select id="category-select" name="categoryId" class="form-select" asp-items="ViewBag.Categories as SelectList">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" type="submit">Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="document-list-container">
+    <partial name="_DocumentListPartial" model="Model" />
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        // NOTE: The AJAX script does not contain any user-facing text and remains unchanged.
+        function updateContent() {
+            var searchString = $('#search-input').val();
+            var categoryId = $('#category-select').val();
+            var pageNumber = 1;
+
+            $.ajax({
+                url: '@Url.Action("Index", "Document")',
+                data: { searchString: searchString, categoryId: categoryId, pageNumber: pageNumber },
+                type: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function (result) {
+                    $('#document-list-container').html(result);
+                }
+            });
+        }
+
+        $('#search-form').submit(function (e) {
+            e.preventDefault();
+            updateContent();
+        });
+
+        $('#category-select').change(function () {
+            updateContent();
+        });
+
+        $(document).on('click', '.pagination a', function (e) {
+            e.preventDefault();
+            var searchString = $('#search-input').val();
+            var categoryId = $('#category-select').val();
+            var pageNumber = $(this).data('page');
+
+            $.ajax({
+                url: '@Url.Action("Index", "Document")',
+                data: { searchString: searchString, categoryId: categoryId, pageNumber: pageNumber },
+                type: 'GET',
+                headers: {
+                    'X-Requested-with': 'XMLHttpRequest'
+                },
+                success: function (result) {
+                    $('#document-list-container').html(result);
+                }
+            });
+        });
+    </script>
+}

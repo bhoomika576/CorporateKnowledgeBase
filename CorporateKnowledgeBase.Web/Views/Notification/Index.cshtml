@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CorporateKnowledgeBase.Web.Models.Notification>
+@{
+    ViewData["Title"] = "Your Notifications";
+    var unreadCount = Model.Count(n => !n.IsRead);
+}
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+            @if (unreadCount > 0)
+            {
+                <small class="text-muted">You have @unreadCount unread notification@(unreadCount > 1 ? "s" : "").</small>
+            }
+        </div>
+        @if (unreadCount > 0)
+        {
+            <form asp-action="MarkAllAsRead" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-check-all me-1"></i> Mark All as Read
+                </button>
+            </form>
+        }
+    </div>
+
+    <div class="list-group list-group-flush">
+        @if (Model.Any())
+        {
+            @foreach (var notification in Model)
+            {
+                // Highlight unread notifications with a different background.
+                var backgroundClass = notification.IsRead ? "" : "bg-light";
+
+                <a asp-action="Go" asp-route-id="@notification.Id" class="list-group-item list-group-item-action @backgroundClass">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-1 @(notification.IsRead ? "" : "fw-bold")">@notification.Message</p>
+                        <small class="text-nowrap">@notification.CreatedDate.ToString("dd MMM yyyy, HH:mm")</small>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            <div class="list-group-item">
+                <p class="text-center text-muted my-3">You have no notifications to display.</p>
+            </div>
+        }
+    </div>
+</div>

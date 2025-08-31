@@ -1,0 +1,44 @@
+﻿@model CorporateKnowledgeBase.Web.Areas.Admin.Models.ManageUserRolesViewModel
+
+@{
+    ViewData["Title"] = "Manage User Roles";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+        <p class="text-muted mb-0">Editing roles for user: <strong>@Model.FullName</strong></p>
+    </div>
+</div>
+
+<form asp-action="ManageRoles" method="post">
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Assignable Roles</h6>
+        </div>
+        <div class="card-body">
+            <input type="hidden" asp-for="UserId" />
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="row">
+                @for (int i = 0; i < Model.Roles.Count; i++)
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="form-check form-switch p-3 border rounded d-flex align-items-center h-100">
+                            <input type="hidden" asp-for="@Model.Roles[i].RoleName" />
+
+                            <label class="form-check-label me-auto fw-bold fs-5" for="roleSwitch_@i" style="cursor:pointer;">
+                                @Model.Roles[i].RoleName
+                            </label>
+                            <input asp-for="@Model.Roles[i].IsSelected" class="form-check-input flex-shrink-0" type="checkbox" role="switch" id="roleSwitch_@i" style="cursor:pointer; width:3em; height:1.5em;" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-footer text-end bg-light">
+            <a asp-action="Index" class="btn btn-secondary">Back to User List</a>
+            <button type="submit" class="btn btn-primary">Update Roles</button>
+        </div>
+</form>
+</div>

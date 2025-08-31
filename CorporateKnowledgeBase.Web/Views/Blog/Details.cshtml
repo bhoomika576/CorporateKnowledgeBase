@@ -1,0 +1,277 @@
+﻿@model CorporateKnowledgeBase.Web.Models.BlogPost
+@using CorporateKnowledgeBase.Web.Enums
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = Model.Title;
+    var user = await UserManager.GetUserAsync(User);
+    bool isAuthor = user != null && user.Id == Model.AuthorId;
+    bool isAdmin = User.IsInRole(RoleEnums.Admin.ToString());
+}
+
+<div id="details-view">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h1>@Model.Title</h1>
+            <p class="text-muted mb-0">
+                <span class="me-2"><i class="bi bi-person"></i> @(Model.Author?.FullName ?? "Unknown")</span>
+                <span class="me-2"><i class="bi bi-calendar-event"></i> @Model.CreatedDate.ToShortDateString()</span>
+                <span><i class="bi bi-tag"></i> @(Model.Category?.Name ?? "Uncategorized")</span>
+            </p>
+
+            @if (Model.Tags.Any())
+            {
+                <div class="mt-2">
+                    <strong>Tags:</strong> @string.Join(", ", Model.Tags.Select(t => t.Name))
+                </div>
+            }
+        </div>
+        <div class="card-body">
+            <div class="blog-content">
+                @Html.Raw(Model.Content)
+            </div>
+        </div>
+        <div class="card-footer bg-light p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                @if (isAuthor || isAdmin)
+                {
+                    <div>
+                        <button id="edit-button" class="btn btn-warning">Edit</button>
+                        <button id="delete-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="edit-view" style="display:none;">
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="AuthorId" />
+        <input type="hidden" asp-for="CreatedDate" />
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-bold"></label>
+                            <input asp-for="Title" class="form-control form-control-lg" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Content" class="form-label fw-bold"></label>
+                            <textarea id="Content-edit" asp-for="Content" class="form-control" rows="15"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-header fw-bold">Publish Settings</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="CategoryId" class="form-label">Category</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories as SelectList"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags</label>
+                            <input name="tags" id="tags-input-edit" class="form-control"
+                                value="@string.Join(",", Model.Tags.Select(t => t.Name))" />
+                        </div>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="button" id="cancel-edit-button" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this post: <strong>@Model.Title</strong>?
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="comments-section" class="card shadow-sm mt-4">
+    <div class="card-header">
+        <h3 class="h5 mb-0">Comments (@Model.Comments.Count)</h3>
+    </div>
+    <div class="card-body">
+        <div id="comments-list">
+            @if (Model.Comments.Any())
+            {
+                @foreach (var comment in Model.Comments.OrderBy(c => c.CreatedDate))
+                {
+                    <partial name="~/Views/Shared/_CommentPartial.cshtml" model="comment" />
+                }
+            }
+            else
+            {
+                <p id="no-comments-message">No comments have been posted yet. Be the first to comment!</p>
+            }
+        </div>
+        <hr />
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="mt-3">
+                <h5>Leave a Comment</h5>
+                <form id="comment-form" asp-controller="Comments" asp-action="Create" method="post">
+                    <input type="hidden" name="BlogPostId" value="@Model.Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-2">
+                        <textarea name="Content" class="form-control" rows="3" placeholder="Write your comment here..."></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary text-center">
+                Please <a asp-area="Identity" asp-page="/Account/Login">login</a> to leave a comment.
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("Partial/_ValidationScriptsPartial");
+    }
+
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@@yaireo/tagify"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
+
+    <script>
+        $(document).ready(function () {
+
+            // --- BÖLÜM 1: DÜZENLEME MODU MANTIĞI (EasyMDE ile güncellendi) ---
+            let tagify = null;
+            let easyMDE = null;
+
+            // "Düzenle" butonuna tıklandığında
+            $('#edit-button').on('click', function () {
+                $('#details-view').hide();
+                $('#edit-view').show();
+                
+                // YORUMLAR BÖLÜMÜNÜ GİZLE
+                $('#comments-section').hide();
+
+                // EasyMDE editörünü başlat
+                easyMDE = new EasyMDE({
+                    element: document.getElementById('Content-edit'),
+                    spellChecker: false
+                });
+
+                // Tagify editörünü başlat
+                var input = document.querySelector('#tags-input-edit');
+                tagify = new Tagify(input, {
+                    whitelist: [],
+                    enforceWhitelist: false,
+                    dropdown: { maxItems: 20, enabled: 1, closeOnSelect: false, highlightFirst: true }
+                });
+                tagify.on('input', onTagifyInput);
+            });
+
+            // "İptal" butonuna tıklandığında
+            $('#cancel-edit-button').on('click', function () {
+                $('#edit-view').hide();
+                $('#details-view').show();
+
+                // YORUMLAR BÖLÜMÜNÜ GÖSTER
+                $('#comments-section').show();
+
+                // Editörleri temizle/kapat
+                if (easyMDE) {
+                    easyMDE.toTextArea();
+                    easyMDE = null;
+                }
+
+                if (tagify) {
+                    tagify.destroy();
+                    tagify = null;
+                }
+            });
+            // Tagify için otomatik tamamlama fonksiyonları
+            let debounceTimeout;
+            function onTagifyInput(e) {
+                var value = e.detail.value;
+                tagify.settings.whitelist.length = 0;
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(function() {
+                    tagify.loading(true);
+                    $.ajax({
+                        url: '@Url.Action("GetTags", "Tags")',
+                        data: { searchTerm: value },
+                        type: 'GET',
+                        success: function(result) {
+                            tagify.settings.whitelist = result;
+                            tagify.loading(false).dropdown.show(value);
+                        }
+                    });
+                }, 300);
+            }
+
+
+            // --- BÖLÜM 2: YORUM GÖNDERME MANTIĞI ---
+            $('#comment-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var form = $(this);
+                var url = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        $('#comments-list').append(response);
+                        $('#no-comments-message').hide();
+                        form.find('textarea').val('');
+                    },
+                    error: function(xhr) {
+                        alert("An error occurred while submitting the comment.");
+                        console.error("Error Details: ", xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+}

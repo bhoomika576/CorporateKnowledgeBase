@@ -1,0 +1,23 @@
+﻿@{
+    // Use the main application layout for a consistent look and feel
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-4">
+    <h2 class="mb-3">Manage Your Account</h2>
+
+    <div class="row">
+        <div class="col-md-3">
+            @* The navigation menu for the manage pages *@
+            <partial name="_ManageNav" />
+        </div>
+        <div class="col-md-9">
+            @* The content of the specific page (Profile, Email, etc.) will be rendered here *@
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

@@ -1,0 +1,47 @@
+﻿@{
+    // This view does not require a model.
+}
+<div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img src="~/images/hero-image.png" class="d-block mx-lg-auto img-fluid" alt="Knowledge Base Illustration" width="700" height="500" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">The Central Hub for Your Team's Knowledge</h1>
+            <p class="lead">
+                Blog posts, technical documents, and important announcements... Access all corporate information from a single, fast source. Share knowledge, increase productivity.
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg px-4 me-md-2">Login</a>
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-secondary btn-lg px-4">Register</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container px-4 py-5" id="featured-3">
+    <h2 class="pb-2 border-bottom">Why Use Knowledge Base?</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                <i class="bi bi-collection"></i>
+            </div>
+            <h3 class="fs-2 text-body-emphasis">Centralized Content</h3>
+            <p>Keep all your team's important blog posts and technical guides in one easy-to-find place, ensuring everyone is on the same page.</p>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                <i class="bi bi-person-video3"></i>
+            </div>
+            <h3 class="fs-2 text-body-emphasis">Collaborate & Discuss</h3>
+            <p>Use the comment system on any article to ask questions, provide feedback, and foster a culture of collaborative learning.</p>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                <i class="bi bi-bell"></i>
+            </div>
+            <h3 class="fs-2 text-body-emphasis">Stay Updated</h3>
+            <p>With a real-time notification system, you'll never miss an important announcement or a new comment on your posts.</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+﻿@model CorporateKnowledgeBase.Web.Models.Announcement
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h1>@Model.Title</h1>
+        <p class="card-subtitle mb-0 text-muted">
+            By: @(Model.Author?.FullName ?? "Unknown") | Date: @Model.CreatedDate.ToShortDateString()
+        </p>
+    </div>
+    <div class="card-body">
+        <div class="announcement-content">
+            @Html.Raw(Model.Content)
+        </div>
+    </div>
+    <div class="card-footer bg-light p-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <a asp-action="Index" class="btn btn-secondary">Back to All Announcements</a>
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                <button type="submit" class="btn btn-danger">Delete This Announcement</button>
+            </form>
+        </div>
+    </div>
+</div>

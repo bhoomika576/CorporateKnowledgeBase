@@ -1,0 +1,49 @@
+﻿@model IEnumerable<object>
+
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        string title = "";
+        string? authorName = "";
+        string controllerName = "";
+        int id = 0;
+        int viewCount = 0;
+
+        if (item is BlogPost post)
+        {
+            title = post.Title;
+            authorName = post.Author?.FullName;
+            controllerName = "Blog";
+            id = post.Id;
+            viewCount = post.ViewCount;
+        }
+        else if (item is TechnicalDocument doc)
+        {
+            title = doc.Title;
+            authorName = doc.Author?.FullName;
+            controllerName = "Document";
+            id = doc.Id;
+            viewCount = doc.ViewCount;
+        }
+
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <a asp-controller="@controllerName" asp-action="Details" asp-route-id="@id">@title</a>
+                @* UPDATED: Translated to English *@
+                <small class="d-block text-muted">Author: @(authorName ?? "Unknown")</small>
+            </div>
+            @if (viewCount > 0)
+            {
+                <span class="badge bg-danger rounded-pill">@viewCount</span>
+            }
+        </li>
+    }
+}
+else
+{
+    <li class="list-group-item">
+        @* UPDATED: Translated to English *@
+        <p class="text-muted mb-0">No content matching this criteria was found.</p>
+    </li>
+}

@@ -1,0 +1,96 @@
+﻿@model CorporateKnowledgeBase.Web.Models.NotificationSettingsViewModel
+@{
+    ViewData["Title"] = "Notification Settings";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+</div>
+
+<p class="lead mb-4">
+    Manage your preferences for receiving notifications within the application.
+</p>
+
+<div class="card shadow-sm">
+    <form asp-action="NotificationSettings" method="post">
+        <div class="card-body">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="list-group">
+                <div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-1">
+                            <i class="fas fa-comment-dots fa-2x text-primary"></i>
+                        </div>
+                        <div class="col-md-8">
+                            <strong class="d-block">Comments on my Content</strong>
+                            <small class="text-muted">Receive a notification when someone comments on your blog posts or documents.</small>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="form-check form-switch d-inline-block">
+                                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotifyOnNewComment" style="width: 3.5em; height: 1.8em; cursor:pointer;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-1">
+                            <i class="fas fa-blog fa-2x text-success"></i>
+                        </div>
+                        <div class="col-md-8">
+                            <strong class="d-block">New Blog Posts</strong>
+                            <small class="text-muted">Receive a notification when any user publishes a new blog post.</small>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="form-check form-switch d-inline-block">
+                                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotifyOnNewBlogPost" style="width: 3.5em; height: 1.8em; cursor:pointer;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-1">
+                            <i class="fas fa-file-code fa-2x text-info"></i>
+                        </div>
+                        <div class="col-md-8">
+                            <strong class="d-block">New Technical Documents</strong>
+                            <small class="text-muted">Receive a notification when a new technical document is published.</small>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="form-check form-switch d-inline-block">
+                                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotifyOnNewDocument" style="width: 3.5em; height: 1.8em; cursor:pointer;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-1">
+                            <i class="fas fa-bullhorn fa-2x text-warning"></i>
+                        </div>
+                        <div class="col-md-8">
+                            <strong class="d-block">New Announcements</strong>
+                            <small class="text-muted">Receive a notification when an administrator publishes a new announcement.</small>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="form-check form-switch d-inline-block">
+                                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotifyOnNewAnnouncement" style="width: 3.5em; height: 1.8em; cursor:pointer;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer text-end bg-light">
+            <a asp-action="Index" class="btn btn-secondary">Back to Profile</a>
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+        </div>
+    </form>
+</div>

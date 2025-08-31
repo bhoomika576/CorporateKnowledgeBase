@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <partial name="Partial/_HeadPartial" />
+
+
+</head>
+<body>
+    
+    <header>
+        <partial name="Partial/_NavbarPartial" />
+    </header>
+
+    <main class="container pb-3" role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted bg-dark text-white mt-auto py-3">
+
+        <partial name="Partial/_FooterPartial" />
+
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function () {
+            toastr.options = {
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true
+            };
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>toastr.success(@Html.Raw(Json.Serialize(TempData["SuccessMessage"])));</text>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <text>toastr.error(@Html.Raw(Json.Serialize(TempData["ErrorMessage"])));</text>
+            }
+            @if (TempData["WarningMessage"] != null)
+            {
+                    <text>toastr.warning(@Html.Raw(Json.Serialize(TempData["WarningMessage"])));</text>
+            }
+            @if (TempData["InfoMessage"] != null)
+            {
+                    <text>toastr.info(@Html.Raw(Json.Serialize(TempData["InfoMessage"])));</text>
+            }
+            <text></text>
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

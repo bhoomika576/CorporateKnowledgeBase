@@ -1,0 +1,112 @@
+﻿@model CorporateKnowledgeBase.Web.Models.TechnicalDocument
+
+@{
+    ViewData["Title"] = "Create New Technical Document";
+}
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Title</label>
+                        <input asp-for="Title" class="form-control form-control-lg" placeholder="Enter the document title here" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label fw-bold">Content</label>
+                        <textarea asp-for="Content" class="form-control" rows="20" id="Content"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    Publish Settings
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories as SelectList"></select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tags</label>
+                        <input name="tags" id="tags-input" class="form-control" placeholder="Add tags..." />
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("Partial/_ValidationScriptsPartial");
+    }
+
+    <script src="https://cdn.jsdelivr.net/npm/@@yaireo/tagify"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+    <script>
+        const easyMDE = new EasyMDE({
+            element: document.getElementById('Content'),
+            spellChecker: false,
+            placeholder: "Enter your Markdown and code snippets here...",
+            toolbar: ["bold", "italic", "heading", "|", "quote", "code", "unordered-list", "ordered-list", "|", "link", "image", "|", "preview", "side-by-side", "fullscreen", "|", "guide"]
+        });
+
+        // --- ADVANCED TAGIFY CONFIGURATION ---
+        var input = document.querySelector('#tags-input');
+
+        var tagify = new Tagify(input, {
+            whitelist: [],
+            enforceWhitelist: false,
+            dropdown: {
+                maxItems: 20,
+                enabled: 1,
+                closeOnSelect: false,
+                highlightFirst: true
+            }
+        });
+
+        tagify.on('input', onTagifyInput);
+
+        let debounceTimeout;
+        function onTagifyInput(e) {
+            var value = e.detail.value;
+            tagify.settings.whitelist.length = 0;
+
+            clearTimeout(debounceTimeout);
+
+            debounceTimeout = setTimeout(function() {
+                tagify.loading(true);
+
+                $.ajax({
+                    url: '@Url.Action("GetTags", "Tags")',
+                    data: { searchTerm: value },
+                    type: 'GET',
+                    success: function(result) {
+                        tagify.settings.whitelist = result;
+                        tagify.loading(false).dropdown.show(value);
+                    }
+                });
+            }, 300);
+        }
+    </script>
+}

@@ -1,0 +1,10 @@
+﻿@model SearchViewModel
+@{
+    ViewData["Title"] = $"Search Results for: '{Model.Query}'";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <hr />
+    <partial name="_SearchResultsPartial" model="Model" />
+</div>

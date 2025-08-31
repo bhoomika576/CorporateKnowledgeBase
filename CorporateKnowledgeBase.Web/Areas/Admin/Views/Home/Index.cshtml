@@ -1,0 +1,121 @@
+﻿@model CorporateKnowledgeBase.Web.Areas.Admin.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+</div>
+
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.UserCount</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-users fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Content Created (Last 30 Days)</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="contentChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Latest Blog Posts</h6></div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @foreach (var post in Model.LatestBlogPosts)
+                    {
+                        <li class="list-group-item">
+                            <a asp-area="" asp-controller="Blog" asp-action="Details" asp-route-id="@post.Id">@post.Title</a>
+                            <small class="d-block text-muted">by @(post.Author?.FullName ?? "N/A")</small>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Latest Registered Users</h6></div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @foreach (var user in Model.LatestUsers)
+                    {
+                        <li class="list-group-item">@user.FullName <small>(@user.Email)</small></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Most Viewed Documents</h6></div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @foreach (var doc in Model.MostViewedDocuments)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a asp-area="" asp-controller="Document" asp-action="Details" asp-route-id="@doc.Id">@doc.Title</a>
+                            <span class="badge bg-primary rounded-pill">@doc.ViewCount views</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var ctx = document.getElementById("contentChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.ChartLabels)),
+                    datasets: [{
+                        label: 'New Content',
+                        data: @Html.Raw(Json.Serialize(Model.ChartData)),
+                        borderColor: 'rgba(78, 115, 223, 1)',
+                        backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

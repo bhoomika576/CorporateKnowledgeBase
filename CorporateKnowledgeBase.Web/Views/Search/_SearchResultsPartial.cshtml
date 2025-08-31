@@ -1,0 +1,50 @@
+﻿@model SearchViewModel
+
+@if (Model.Results.Any())
+{
+    <p class="text-muted">Found @Model.Results.Count result(s) for "@Model.Query".</p>
+
+    @foreach (var item in Model.Results)
+    {
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title"><a href="@item.Url">@item.Title</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    @if (item.ResultType == "Blog Post")
+                    {
+                        <span class="badge bg-primary">@item.ResultType</span>
+                    }
+                    else if (item.ResultType == "Technical Document")
+                    {
+                        <span class="badge bg-success">@item.ResultType</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">@item.ResultType</span>
+                    }
+                    <span class="ms-2">Author: @item.AuthorName</span>
+                    <span class="ms-2">Date: @item.CreatedDate.ToShortDateString()</span>
+                </h6>
+                <p class="card-text">@item.ContentSnippet</p>
+                <a href="@item.Url" class="card-link">Read More</a>
+            </div>
+        </div>
+    }
+
+    <nav aria-label="Search results navigation">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-query="@Model.Query" asp-route-pageNumber="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+else
+{
+    <div class="alert alert-info">
+        <p>No results found for "@Model.Query".</p>
+    </div>
+}
