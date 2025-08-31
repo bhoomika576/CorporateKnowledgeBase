@@ -74,9 +74,7 @@ This project is a **Corporate Knowledge Base** platform developed to centralize 
 ## ⚙️ Installation
 
 1.  **Clone the Repository:**
-    ```bash
     git clone [https://github.com/umitkrkmz/CorporateKnowledgeBase.git](https://github.com/umitkrkmz/CorporateKnowledgeBase.git)
-    ```
 2.  **Navigate to the Project Directory:**
     Navigate to the root directory where the `CorporateKnowledgeBase.sln` file is located.
 3.  **Configure Appsettings and Secrets:**
